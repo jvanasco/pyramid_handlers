@@ -5,7 +5,7 @@ from pyramid.exceptions import ConfigurationError
 
 action_re = re.compile(r'''({action}|:action)''')
 
-def add_handler(self, route_name, pattern, handler, action=None, **kw):
+def add_handler(self, route_name, pattern, handler, action=None, default_action=None, **kw):
     """ Add a Pylons-style view handler.  This function adds a
     route and some number of views based on a handler object
     (usually a class).
@@ -45,6 +45,9 @@ def add_handler(self, route_name, pattern, handler, action=None, **kw):
     }
 
     self.add_route(route_name, pattern, **kw)
+    if default_action :
+        pattern_stripped = pattern.replace("{action}","").replace(":action","")
+        add_handler( self, "%s-default_action" % route_name, pattern_stripped, handler, action=default_action, **kw)
 
     handler = self.maybe_dotted(handler)
     action_decorator = getattr(handler, '__action_decorator__', None)
