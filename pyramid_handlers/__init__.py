@@ -47,6 +47,7 @@ def add_handler(self, route_name, pattern, handler, action=None, default_action=
     self.add_route(route_name, pattern, **kw)
     if default_action :
         pattern_stripped = pattern.replace("{action}","").replace(":action","")
+        if ( len(pattern_stripped) >= 2 and pattern_stripped[-2:] == '//' ): pattern_stripped = pattern_stripped[:-1]
         add_handler( self, "%s-default_action" % route_name, pattern_stripped, handler, action=default_action, **kw)
 
     handler = self.maybe_dotted(handler)
